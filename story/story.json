@@ -1,7 +1,7 @@
 {
   "start": {
     "title": "Старт",
-    "text": "Ты запускаешь игру в Colab. Нажми кнопку — и мир спасён. Или сломан.",
+    "text": "Энергия: {var:energy}. Деньги: {var:money}.\nТы запускаешь игру в Colab. Нажми кнопку — и мир спасён. Или сломан.",
     "image": null,
     "choices": [
       {
@@ -12,41 +12,75 @@
       {
         "text": "Пойти за кофе",
         "next": "coffee",
-        "effects": {"items_add": ["coffee"]}
+        "effects": {"items_add": ["coffee"], "vars_add": {"money": -1}}
       },
       {
         "text": "Выпить кофе (только если есть кофе)",
         "next": "coffee_drink",
         "requires": {"items_has": ["coffee"]},
-        "effects": {"items_remove": ["coffee"], "flags_add": ["caffeinated"]}
+        "effects": {"items_remove": ["coffee"], "flags_add": ["caffeinated"], "vars_add": {"energy": 2}}
+      },
+      {
+        "text": "Взломать прод (нужно энергии ≥ 2)",
+        "next": "hack",
+        "requires": {"vars_gte": {"energy": 2}},
+        "effects": {"roll_to_var": {"expr": "1d20+1", "var": "roll"}}
       }
-    ]
-  },
-
-  "logs": {
-    "title": "Логи",
-    "text": "В логах есть строка: SUSPECT=KPI_DRIFT. Пахнет продом.",
-    "image": null,
-    "choices": [
-      {"text": "Назад", "next": "start"}
     ]
   },
 
   "coffee": {
     "title": "Кофе",
-    "text": "Ты берёшь кофе. Он горячий, как продовые алерты ночью.",
+    "text": "Ты купил кофе за 1 монету. Это инвестиция в выживание.\n(Серьёзно.)",
     "image": null,
-    "choices": [
-      {"text": "Назад", "next": "start"}
-    ]
+    "choices": [{"text": "Назад", "next": "start"}]
   },
 
   "coffee_drink": {
     "title": "Кофе выпит",
-    "text": "Ты выпил кофе. Теперь ты быстрее думаешь и сильнее страдаешь. Баланс.",
+    "text": "Кофе выпит. Энергия теперь {var:energy}.",
+    "image": null,
+    "choices": [{"text": "Назад", "next": "start"}]
+  },
+
+  "logs": {
+    "title": "Логи",
+    "text": "В логах строка: SUSPECT=KPI_DRIFT.\nЭнергия: {var:energy}. Деньги: {var:money}.",
+    "image": null,
+    "choices": [{"text": "Назад", "next": "start"}]
+  },
+
+  "hack": {
+    "title": "Взлом прода",
+    "text": "Ты кидаешь кубик: {var:roll}.\nЕсли ≥ 12 — ты герой. Если меньше — ты легенда факапа.",
     "image": null,
     "choices": [
-      {"text": "Назад", "next": "start"}
+      {
+        "text": "Если бросок ≥ 12 → Успех",
+        "next": "success",
+        "requires": {"vars_gte": {"roll": 12}},
+        "effects": {"vars_add": {"money": 5}}
+      },
+      {
+        "text": "Если бросок < 12 → Провал",
+        "next": "fail",
+        "requires": {"vars_lte": {"roll": 11}},
+        "effects": {"vars_add": {"energy": -2}}
+      }
     ]
+  },
+
+  "success": {
+    "title": "Успех",
+    "text": "Ты спас прод. Тебе накинули премию.\nДеньги: {var:money}. Энергия: {var:energy}.",
+    "image": null,
+    "choices": [{"text": "Играть дальше", "next": "start"}]
+  },
+
+  "fail": {
+    "title": "Провал",
+    "text": "Прод упал. Тебе сказали: “Стабильность — это миф”.\nЭнергия: {var:energy}.",
+    "image": null,
+    "choices": [{"text": "Откатиться к старту", "next": "start"}]
   }
 }
