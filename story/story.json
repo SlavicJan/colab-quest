@@ -1,28 +1,52 @@
 {
-    "start": {
-      "title": "Старт",
-      "text": "Ты запускаешь игру в Colab. Нажми кнопку — и мир спасён. Или сломан.",
-      "image": null,
-      "choices": [
-        {"text": "Пойти в логи", "next": "logs"},
-        {"text": "Пойти за кофе", "next": "coffee"}
-      ]
-    },
-    "logs": {
-      "title": "Логи",
-      "text": "В логах есть строка: SUSPECT=KPI_DRIFT. Пахнет продом.",
-      "image": null,
-      "choices": [
-        {"text": "Назад", "next": "start"}
-      ]
-    },
-    "coffee": {
-      "title": "Кофе",
-      "text": "Кофе-машина смотрит на тебя как прод на новичка.",
-      "image": null,
-      "choices": [
-        {"text": "Назад", "next": "start"}
-      ]
-    }
+  "start": {
+    "title": "Старт",
+    "text": "Ты запускаешь игру в Colab. Нажми кнопку — и мир спасён. Или сломан.",
+    "image": null,
+    "choices": [
+      {
+        "text": "Пойти в логи",
+        "next": "logs",
+        "effects": {"flags_add": ["went_logs"]}
+      },
+      {
+        "text": "Пойти за кофе",
+        "next": "coffee",
+        "effects": {"items_add": ["coffee"]}
+      },
+      {
+        "text": "Выпить кофе (только если есть кофе)",
+        "next": "coffee_drink",
+        "requires": {"items_has": ["coffee"]},
+        "effects": {"items_remove": ["coffee"], "flags_add": ["caffeinated"]}
+      }
+    ]
+  },
+
+  "logs": {
+    "title": "Логи",
+    "text": "В логах есть строка: SUSPECT=KPI_DRIFT. Пахнет продом.",
+    "image": null,
+    "choices": [
+      {"text": "Назад", "next": "start"}
+    ]
+  },
+
+  "coffee": {
+    "title": "Кофе",
+    "text": "Ты берёшь кофе. Он горячий, как продовые алерты ночью.",
+    "image": null,
+    "choices": [
+      {"text": "Назад", "next": "start"}
+    ]
+  },
+
+  "coffee_drink": {
+    "title": "Кофе выпит",
+    "text": "Ты выпил кофе. Теперь ты быстрее думаешь и сильнее страдаешь. Баланс.",
+    "image": null,
+    "choices": [
+      {"text": "Назад", "next": "start"}
+    ]
   }
-  
+}
